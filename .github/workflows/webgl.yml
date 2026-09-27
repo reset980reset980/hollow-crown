@@ -1,0 +1,60 @@
+# Builds the Unity WebGL player and publishes it to the gh-pages branch (GitHub Pages).
+# One-time setup - add these repository secrets (Settings > Secrets and variables > Actions):
+#   UNITY_LICENSE  - full contents of your Unity license file (Unity_lic.ulf)
+#   UNITY_EMAIL    - Unity account email
+#   UNITY_PASSWORD - Unity account password
+# Runs on every push to main that touches the game, or manually from the Actions tab.
+name: WebGL build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['unity/**', '.github/workflows/webgl.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: webgl
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: unity/Library
+          key: Library-WebGL-${{ hashFiles('unity/Assets/**', 'unity/Packages/**', 'unity/ProjectSettings/**') }}
+          restore-keys: Library-WebGL-
+
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: unity
+          unityVersion: 6000.4.1f1
+          targetPlatform: WebGL
+          buildMethod: Setup.BuildWeb
+          allowDirtyBuild: true
+
+      - name: Publish Build/ to gh-pages (keeps index.html)
+        run: |
+          test -f unity/Builds/WebGL/Build/WebGL.loader.js
+          git clone --depth 1 -b gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" site
+          rm -rf site/Build
+          sudo cp -r unity/Builds/WebGL/Build site/Build
+          sudo chown -R "$(id -u):$(id -g)" site/Build
+          cd site
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "WebGL build ${GITHUB_SHA::7}" || exit 0
+          git push

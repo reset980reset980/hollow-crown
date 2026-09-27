@@ -142,7 +142,7 @@ public class Game : MonoBehaviour
         screens.HideTitle();
         Transition(Stats.D.map, null);
         if (fresh)
-            hud.Chat("WELCOME TO CROWNHOLLOW. TALK TO ELDER ROWAN BY THE FIRE (UP).", "gold");
+            hud.Chat("환영합니다! 모닥불 옆 장로 로완에게 말을 거세요 (↑)", "gold");
     }
     public void ToTitle()
     {
@@ -186,7 +186,7 @@ public class Game : MonoBehaviour
         foreach (var p in map.portals)
             if (Mathf.Abs(player.x - p.def.x) < 10 && Mathf.Abs(player.y - p.def.y) < 6)
             {
-                if (p.def.to == "glade" && Stats.D.quest < 3 && !Stats.D.bossDown) { hud.Chat("A ROYAL SEAL BLOCKS THE WAY...", "white"); Sfx.Play("deny"); return true; }
+                if (p.def.to == "glade" && Stats.D.quest < 3 && !Stats.D.bossDown) { hud.Chat("왕의 봉인이 길을 막고 있다...", "white"); Sfx.Play("deny"); return true; }
                 Transition(p.def.to, p.def.toPortal); return true;
             }
         foreach (var n in map.npcs)
@@ -199,25 +199,25 @@ public class Game : MonoBehaviour
         n.talking = true;
         if (n.d.id == "merchant")
         {
-            dialog.Show("merchant", "MIRA - MERCHANT", new[] { "WELCOME, TRAVELER! POTIONS, RUNES... IF IT HELPS YOU FIGHT MUSHROOMS, I SELL IT." }, new[] { "BUY", "LEAVE" },
+            dialog.Show("merchant", "상인 미라", new[] { "어서 오세요, 여행자님! 포션, 룬... 버섯과 싸우는 데 도움이 된다면 뭐든 팔아요." }, new[] { "구매", "나가기" },
                 c => { n.talking = false; if (c == 0) shop.Show(); });
             return;
         }
         var q = Stats.Cur; var D = Stats.D;
-        const string who = "ELDER ROWAN";
-        if (q == null) { dialog.Show("elder", who, new[] { "THE FOREST SLEEPS PEACEFULLY AGAIN. REST BY THE FIRE, HERO." }, null, c => n.talking = false); return; }
+        const string who = "장로 로완";
+        if (q == null) { dialog.Show("elder", who, new[] { "숲이 다시 평화롭게 잠들었네. 모닥불 곁에서 쉬게나, 영웅이여." }, null, c => n.talking = false); return; }
         if (D.qstate == 0)
-            dialog.Show("elder", who, q.offer, new[] { "ACCEPT", "DECLINE" }, c =>
+            dialog.Show("elder", who, q.offer, new[] { "수락", "거절" }, c =>
             {
                 n.talking = false;
                 if (c != 0) return;
                 D.qstate = 1; D.qcount = 0;
-                hud.Chat("QUEST STARTED: " + q.title, "green"); Sfx.Play("open");
-                if (q.kind == "collect" && Stats.QuestProgress >= q.need) { D.qstate = 2; hud.Chat("QUEST COMPLETE! RETURN TO ELDER ROWAN.", "gold"); }
+                hud.Chat("퀘스트 시작: " + q.title, "green"); Sfx.Play("open");
+                if (q.kind == "collect" && Stats.QuestProgress >= q.need) { D.qstate = 2; hud.Chat("퀘스트 완료! 장로 로완에게 돌아가세요.", "gold"); }
                 Stats.Save();
             });
         else if (D.qstate == 1) dialog.Show("elder", who, q.active, null, c => n.talking = false);
-        else dialog.Show("elder", who, q.done, new[] { "COMPLETE" }, c => { n.talking = false; Stats.TurnIn(); hud.Toast("QUEST CLEAR!", "goldBig"); });
+        else dialog.Show("elder", who, q.done, new[] { "완료" }, c => { n.talking = false; Stats.TurnIn(); hud.Toast("퀘스트 클리어!", "goldBig"); });
     }
 
     string cheatBuf = "";
@@ -227,14 +227,14 @@ public class Game : MonoBehaviour
         D.level = 30; D.exp = 0; D.hp = Stats.MaxHp; D.mp = Stats.MaxMp; D.red = 99; D.blue = 99;
         player.cdThrow = player.cdAv = player.cdAs = player.cdSp = 0;
         OnLevelUp();
-        hud.Chat("CHEAT: LV 30, ALL SKILLS UNLOCKED.", "gold", 4f);
+        hud.Chat("치트: LV 30, 모든 스킬 해금.", "gold", 4f);
         Stats.Save();
     }
 
     public void OnLevelUp()
     {
-        hud.Toast("LEVEL UP!", "goldBig");
-        hud.Chat("LEVEL UP! YOU ARE NOW LV " + Stats.D.level + ".", "gold");
+        hud.Toast("레벨 업!", "goldBig");
+        hud.Chat("레벨 업! 이제 LV " + Stats.D.level + "입니다.", "gold");
         if (Atlas.Sheets.ContainsKey("levelup")) fxs.Play("levelup", player.x, player.y, true, 0, -1, false, 70);
         parts.Burst(player.x, player.y + 12, 30, Particles.SPARK, 90, 0.9f, -20, true, false, 0, Mathf.PI * 2, 0.3f);
         Sfx.Play("levelup");
@@ -242,8 +242,8 @@ public class Game : MonoBehaviour
             if (Stats.SkillLevel[s] == Stats.D.level)
             {
                 string[] keys = { "J", "K", "L", "U", "SPACE X2" };
-                hud.Chat("NEW SKILL: " + Stats.SkillName[s] + " [" + keys[s] + "]", "green");
-                pops.Show("NEW SKILL: " + Stats.SkillName[s], "green", player.x, player.y + 44, 3f);
+                hud.Chat("새 스킬: " + Stats.SkillName[s] + " [" + keys[s] + "]", "green");
+                pops.Show("새 스킬: " + Stats.SkillName[s], "green", player.x, player.y + 44, 3f);
                 Sfx.Play("unlock");
             }
         Stats.Save();
@@ -251,7 +251,7 @@ public class Game : MonoBehaviour
 
     public void OnPlayerDeath()
     {
-        dialog.Show(null, null, new[] { "YOU HAVE BEEN DEFEATED. YOU WILL RETURN TO CROWNHOLLOW AND LOSE 10% OF YOUR EXP." }, new[] { "OK" }, c =>
+        dialog.Show(null, null, new[] { "쓰러졌습니다. 크라운할로우로 돌아가며 경험치의 10%를 잃습니다." }, new[] { "확인" }, c =>
         {
             Stats.D.exp = Mathf.Max(0, Stats.D.exp - Stats.ExpNeed(Stats.D.level) / 10);
             player.Revive();
@@ -260,7 +260,7 @@ public class Game : MonoBehaviour
     }
 
     public void AddDamage(float v) { }
-    public void OnBossGone() { hud.Chat("THE ROYAL GLADE FALLS SILENT.", "gold"); }
+    public void OnBossGone() { hud.Chat("왕의 공터에 정적이 흐른다.", "gold"); }
 
     // ------------------------------------------------------------------ input
     void Update()

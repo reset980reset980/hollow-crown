@@ -13,10 +13,10 @@ public static class MobDefs
 {
     static readonly Dictionary<string, MobDef> all = new Dictionary<string, MobDef>
     {
-        { "shellback", new MobDef { id = "shellback", name = "SHELLBACK", level = 1, hp = 24, atk = 5, exp = 6, mesoMin = 2, mesoMax = 7, speed = 9, w = 18, h = 13 } },
-        { "capling", new MobDef { id = "capling", name = "CAPLING", level = 3, hp = 72, atk = 11, exp = 14, mesoMin = 5, mesoMax = 15, speed = 20, w = 16, h = 18, drop = "cap", dropChance = 0.55f } },
-        { "stumpy", new MobDef { id = "stumpy", name = "STUMPY", level = 6, hp = 240, atk = 20, exp = 32, mesoMin = 12, mesoMax = 30, speed = 14, w = 22, h = 24, drop = "root", dropChance = 0.3f } },
-        { "wisp", new MobDef { id = "wisp", name = "WISP", level = 8, hp = 200, atk = 24, exp = 40, mesoMin = 15, mesoMax = 36, speed = 22, w = 14, h = 17, fly = true } },
+        { "shellback", new MobDef { id = "shellback", name = "쉘백", level = 1, hp = 24, atk = 5, exp = 6, mesoMin = 2, mesoMax = 7, speed = 9, w = 18, h = 13 } },
+        { "capling", new MobDef { id = "capling", name = "캐플링", level = 3, hp = 72, atk = 11, exp = 14, mesoMin = 5, mesoMax = 15, speed = 20, w = 16, h = 18, drop = "cap", dropChance = 0.55f } },
+        { "stumpy", new MobDef { id = "stumpy", name = "스텀피", level = 6, hp = 240, atk = 20, exp = 32, mesoMin = 12, mesoMax = 30, speed = 14, w = 22, h = 24, drop = "root", dropChance = 0.3f } },
+        { "wisp", new MobDef { id = "wisp", name = "위스프", level = 8, hp = 200, atk = 24, exp = 40, mesoMin = 15, mesoMax = 36, speed = 22, w = 14, h = 17, fly = true } },
     };
     public static MobDef Get(string id) { return all[id]; }
 }
@@ -189,7 +189,7 @@ public class Drops
     readonly List<Drop> list = new List<Drop>();
     public static string ItemName(string id)
     {
-        switch (id) { case "cap": return "CAPLING CAP"; case "root": return "GNARLED ROOT"; case "red": return "RED POTION"; case "blue": return "BLUE POTION"; case "crown": return "MUSHROOM CROWN"; }
+        switch (id) { case "cap": return "캐플링 갓"; case "root": return "옹이 뿌리"; case "red": return "빨간 포션"; case "blue": return "파란 포션"; case "crown": return "버섯 왕관"; }
         return id.ToUpper();
     }
     static string Icon(string id)
@@ -234,7 +234,7 @@ public class Drops
             {
                 d.on = false; d.sr.enabled = false;
                 G.parts.Burst(d.x, d.y + 4, 6, Particles.SPARK, 30, 0.3f, 0, true);
-                if (d.id == "meso") { Stats.D.meso += d.n; G.hud.Gain("MESO", d.n, "white"); Sfx.Play("meso", 0.7f); }
+                if (d.id == "meso") { Stats.D.meso += d.n; G.hud.Gain("메소", d.n, "white"); Sfx.Play("meso", 0.7f); }
                 else { Stats.AddItem(d.id, d.n); G.hud.Chat("+1 " + ItemName(d.id), "white", 2.2f); Sfx.Play("pickup"); }
             }
         }

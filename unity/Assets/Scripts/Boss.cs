@@ -128,7 +128,7 @@ public class Boss : ITarget
         G.fxs.Callout(n == 2 ? "spore" : "final");
         G.Shake(22, 2); G.Flash(2); G.Hitstop(8);
         G.parts.Burst(x, y + 24, 36, HITP, 140, 0.8f, 40, true, false, 0, Mathf.PI * 2, 0.4f);
-        G.hud.Chat(n == 2 ? "KING SHROOM CALLS THE SPORE STORM!" : "KING SHROOM MAKES HIS FINAL STAND!", "gold", 3f);
+        G.hud.Chat(n == 2 ? "킹 슈룸이 포자 폭풍을 부른다!" : "킹 슈룸의 최후의 저항!", "gold", 3f);
         Sfx.Play("charge"); Sfx.Play("hitBig");
     }
 

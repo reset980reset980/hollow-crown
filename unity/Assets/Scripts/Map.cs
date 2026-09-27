@@ -46,7 +46,7 @@ public static class MapDefs
     static MapDefs()
     {
         // ---- Crownhollow: lakeside starting town
-        var t = new MapDef { id = "town", name = "CROWNHOLLOW", theme = "town", bgm = "bgm_town", w = 480, h = 180, waterY = FLOOR - 8, spawnX = 110, dummyX = 360, fire = true, fireX = 248, camMinY = -18 };
+        var t = new MapDef { id = "town", name = "크라운할로우", theme = "town", bgm = "bgm_town", w = 480, h = 180, waterY = FLOOR - 8, spawnX = 110, dummyX = 360, fire = true, fireX = 248, camMinY = -18 };
         t.G(0, FLOOR, 60)
          .Portal("east", 462, FLOOR, "grove", "west")
          .Npc("elder", 262).Npc("merchant", 176)
@@ -58,7 +58,7 @@ public static class MapDefs
         All[t.id] = t;
 
         // ---- Mushroom Grove (Lv 1-5)
-        var g = new MapDef { id = "grove", name = "MUSHROOM GROVE", theme = "grove", bgm = "bgm_field", w = 960, h = 240, spawnX = 40 };
+        var g = new MapDef { id = "grove", name = "버섯 숲", theme = "grove", bgm = "bgm_field", w = 960, h = 240, spawnX = 40 };
         g.G(0, FLOOR, 120)                                  // 0 ground
          .P(64, 70, 12).P(200, 104, 10).P(330, 76, 14)      // 1 2 3
          .P(480, 120, 10).P(600, 84, 12).P(740, 118, 12)    // 4 5 6
@@ -75,7 +75,7 @@ public static class MapDefs
         All[g.id] = g;
 
         // ---- Hollow Deep (Lv 5-9)
-        var d = new MapDef { id = "deep", name = "HOLLOW DEEP", theme = "deep", bgm = "bgm_deep", w = 960, h = 300, spawnX = 40 };
+        var d = new MapDef { id = "deep", name = "할로우 딥", theme = "deep", bgm = "bgm_deep", w = 960, h = 300, spawnX = 40 };
         d.G(0, FLOOR, 120)                                                    // 0
          .P(90, 80, 12).P(260, 60, 10).P(380, 110, 12).P(540, 72, 12).P(700, 100, 14)   // 1-5
          .P(150, 150, 12).P(330, 190, 10).P(480, 160, 12).P(640, 200, 10).P(800, 170, 12) // 6-10
@@ -92,7 +92,7 @@ public static class MapDefs
         All[d.id] = d;
 
         // ---- Royal Glade (boss arena)
-        var b = new MapDef { id = "glade", name = "ROYAL GLADE", theme = "glade", bgm = "bgm_boss", w = 320, h = 180, spawnX = 40, boss = true };
+        var b = new MapDef { id = "glade", name = "왕의 공터", theme = "glade", bgm = "bgm_boss", w = 320, h = 180, spawnX = 40, boss = true };
         b.G(0, FLOOR, 40).Portal("west", 14, FLOOR, "deep", "east")
          .Prop("prop_pine_fg", -14, FLOOR - 6, 40).Prop("prop_pine_fg", 296, FLOOR - 6, 40).Prop("prop_shrooms", 60, FLOOR, 3).Prop("prop_shrooms", 250, FLOOR, 3);
         All[b.id] = b;

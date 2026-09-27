@@ -13,7 +13,11 @@ public class PixelText
         root.SetParent(parent, false);
         this.order = order;
     }
-    public static int Width(string s, int scale = 1) { return s.Length == 0 ? 0 : (s.Length * 4 - 1) * scale; }
+    public static int Width(string s, int scale = 1)
+    {
+        if (KFont.Needs(s)) return KFont.Width(s, scale);
+        return s.Length == 0 ? 0 : (s.Length * 4 - 1) * scale;
+    }
 
     // (x, topY): x of the first glyph's fill column, topY = top edge of the fill rows
     public void Set(string s, string style, float x, float topY, bool visible = true)
@@ -21,6 +25,7 @@ public class PixelText
         var sh = Atlas.Sheets["font_" + style];
         int adv = (int)sh.Meta("adv", 4);
         while (glyphs.Count < s.Length) glyphs.Add(Px.MakeSR("g", root, order, root.gameObject.layer));
+        if (KFont.Needs(s)) { SetKorean(s, style, (int)sh.Meta("scale", 1), x, topY, visible); return; }
         for (int i = 0; i < glyphs.Count; i++)
         {
             var g = glyphs[i];
@@ -31,6 +36,23 @@ public class PixelText
             Px.Place(g.transform, x + i * adv - 1, topY + 1 - sh.h);
         }
     }
+    // Korean strings: 7px-tall Galmuri7 glyphs, vertically centred on the 5px band the 3x5 font uses.
+    void SetKorean(string s, string style, int sc, float x, float topY, bool visible)
+    {
+        float pen = x, baseY = topY - 6 * sc + 1;
+        for (int i = 0; i < glyphs.Count; i++)
+        {
+            var g = glyphs[i];
+            if (i >= s.Length || !visible) { g.enabled = false; continue; }
+            var kg = KFont.Get(s[i]);
+            if (kg == null) { g.enabled = false; continue; }
+            if (kg.w == 0 || kg.h == 0) { g.enabled = false; pen += kg.adv * sc; continue; }
+            g.enabled = true; g.sprite = KFont.Sprite(style, kg, sc);
+            Px.Place(g.transform, pen + kg.xo * sc - 1, baseY + kg.yo * sc - 1);
+            pen += kg.adv * sc;
+        }
+    }
+
     public void Hide() { foreach (var g in glyphs) g.enabled = false; }
 }
 

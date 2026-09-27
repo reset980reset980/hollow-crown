@@ -226,10 +226,10 @@ public class Hud
         bool showQ = play && !boss && q != null && D.qstate > 0;
         if (showQ)
         {
-            string qp = D.qstate == 2 ? "COMPLETE! SEE ELDER ROWAN" : (q.kind == "boss" ? "DEFEAT KING SHROOM" : (q.kind == "collect" ? "CAPS " : q.target.ToUpper() + "S ") + Stats.QuestProgress + "/" + q.need);
-            questH.Set("QUEST", "gold", Px.W - 3 - PixelText.Width("QUEST"), 176);
-            questT.Set(q.title, "white", Px.W - 3 - PixelText.Width(q.title), 168);
-            questP.Set(qp, D.qstate == 2 ? "gold" : "green", Px.W - 3 - PixelText.Width(qp), 160);
+            string qp = D.qstate == 2 ? "완료! 장로 로완에게 가기" : (q.kind == "boss" ? "킹 슈룸 처치" : (q.kind == "collect" ? "캐플링 갓 " : (q.target == "shellback" ? "쉘백 " : q.target == "stumpy" ? "스텀피 " : q.target.ToUpper() + " ")) + Stats.QuestProgress + "/" + q.need);
+            questH.Set("퀘스트", "gold", Px.W - 3 - PixelText.Width("퀘스트"), 176);
+            questT.Set(q.title, "white", Px.W - 3 - PixelText.Width(q.title), 167);
+            questP.Set(qp, D.qstate == 2 ? "gold" : "green", Px.W - 3 - PixelText.Width(qp), 158);
         }
         else { questH.Hide(); questT.Hide(); questP.Hide(); }
 
@@ -238,7 +238,7 @@ public class Hud
         {
             float age = i < chat.Count ? G.time - chat[i].t : 99;
             bool on = play && i < chat.Count && age < chat[i].life && (age < chat[i].life - 0.4f || ((G.tick >> 1) & 1) == 0);
-            if (on) chatT[i].Set(chat[i].s, chat[i].style, 4, 28 + i * 7); else chatT[i].Hide();
+            if (on) chatT[i].Set(chat[i].s, chat[i].style, 4, 29 + i * 9); else chatT[i].Hide();
         }
         // ---------------- toast
         if (toastTime > 0)
@@ -251,15 +251,15 @@ public class Hud
         else toastTxt.Hide();
         // first-time controls hint
         bool showHint = play && G.time - G.playStart < 14 && !G.fxs.CalloutActive && !boss && !Autoplay.Showcase;
-        string ht = "ARROWS MOVE  SPACE JUMP  J ATTACK  UP TALK/PORTAL  ESC HELP";
+        string ht = "방향키 이동 · 스페이스 점프 · J 공격 · ↑ 대화/포탈 · ESC 도움말";
         hintT.Set(ht, "white", Mathf.Round((Px.W - PixelText.Width(ht)) / 2f), 130, showHint);
 
         // ---------------- boss HP bar
         var b = G.boss;
         bossPanel.Set(90, 158, 228, 20, play && boss);
         bIcon.enabled = play && boss; Px.Place(bIcon.transform, 93, 161);
-        bName.Set("KING SHROOM", "gold", 110, 176, play && boss);
-        string stg = "STAGE " + Mathf.Max(1, b.Stage) + "/3";
+        bName.Set("킹 슈룸", "gold", 110, 176, play && boss);
+        string stg = "페이즈 " + Mathf.Max(1, b.Stage) + "/3";
         bStage.Set(stg, b.Stage >= 3 ? "crit" : "white", 190 - PixelText.Width(stg) / 2, 176, play && boss);
         if (play && boss)
         {
@@ -308,7 +308,7 @@ public class Dialog
 
     public void Show(string npc, string displayName, string[] pg, string[] choices, Action<int> cb)
     {
-        who = npc; name.Hide(); pages = pg; options = choices ?? new[] { "OK" }; done = cb; page = 0; sel = 0; reveal = 0; Open = true;
+        who = npc; name.Hide(); pages = pg; options = choices ?? new[] { "확인" }; done = cb; page = 0; sel = 0; reveal = 0; Open = true;
         portrait.sprite = npc != null && Atlas.Has("portrait_" + npc) ? Atlas.Single("portrait_" + npc) : null;
         dispName = displayName;
         Wrap();
@@ -319,12 +319,12 @@ public class Dialog
     void Wrap()
     {
         wrapped.Clear();
-        int max = portrait.sprite != null ? 50 : 60;
+        int max = portrait.sprite != null ? 212 : 252;   // pixel width (Korean glyphs are wider than the 3x5 font)
         var words = pages[page].Split(' ');
         string cur = "";
         foreach (var w in words)
         {
-            if ((cur + " " + w).Trim().Length > max) { wrapped.Add(cur); cur = w; }
+            if (cur.Length > 0 && PixelText.Width((cur + " " + w).Trim()) > max) { wrapped.Add(cur); cur = w; }
             else cur = (cur + " " + w).Trim();
         }
         if (cur.Length > 0) wrapped.Add(cur);
@@ -368,11 +368,11 @@ public class Dialog
             string s = wrapped[k];
             string shown = budget >= s.Length ? s : budget > 0 ? s.Substring(0, budget) : "";
             budget -= s.Length;
-            lines[k].Set(shown, "white", tx, 79 - k * 8);
+            lines[k].Set(shown, "white", tx, 79 - k * 10);
         }
         int total = 0; foreach (var w in wrapped) total += w.Length;
         bool full = reveal >= total;
-        string[] show = LastPage ? options : new[] { "NEXT" };
+        string[] show = LastPage ? options : new[] { "다음" };
         int ox = 290;
         for (int k = opts.Length - 1; k >= 0; k--)
         {
@@ -397,10 +397,10 @@ public class Shop
     class Item { public string key, name, icon; public int price; }
     readonly Item[] items =
     {
-        new Item { key = "red", name = "RED POTION  (+60 HP)", icon = "potion_red", price = 25 },
-        new Item { key = "blue", name = "BLUE POTION (+40 MP)", icon = "potion_blue", price = 40 },
-        new Item { key = "steely", name = "RUNE OF MIGHT (+8 ATK)", icon = "star_steely", price = 1200 },
-        new Item { key = "ilbi", name = "RUNE OF GLORY (+20 ATK)", icon = "star_ilbi", price = 5000 },
+        new Item { key = "red", name = "빨간 포션 (+60 HP)", icon = "potion_red", price = 25 },
+        new Item { key = "blue", name = "파란 포션 (+40 MP)", icon = "potion_blue", price = 40 },
+        new Item { key = "steely", name = "힘의 룬 (공격력 +8)", icon = "star_steely", price = 1200 },
+        new Item { key = "ilbi", name = "영광의 룬 (공격력 +20)", icon = "star_ilbi", price = 5000 },
     };
     readonly Panel panel, hl;
     readonly PixelText title, meso, help;
@@ -430,17 +430,17 @@ public class Shop
             var it = items[sel];
             bool owned = (it.key == "steely" && D.starTier >= 1) || (it.key == "ilbi" && D.starTier >= 2);
             bool needPrev = it.key == "ilbi" && D.starTier < 1;
-            if (owned || needPrev) { Sfx.Play("deny"); G.hud.Chat(owned ? "YOU ALREADY OWN THAT RUNE." : "BUY THE RUNE OF MIGHT FIRST.", "white"); }
-            else if (D.meso < it.price) { Sfx.Play("deny"); G.hud.Chat("NOT ENOUGH MESOS.", "white"); }
+            if (owned || needPrev) { Sfx.Play("deny"); G.hud.Chat(owned ? "이미 가지고 있는 룬입니다." : "힘의 룬을 먼저 구매하세요.", "white"); }
+            else if (D.meso < it.price) { Sfx.Play("deny"); G.hud.Chat("메소가 부족합니다.", "white"); }
             else
             {
                 D.meso -= it.price; Sfx.Play("meso");
                 if (it.key == "red") D.red++; else if (it.key == "blue") D.blue++;
-                else { D.starTier = it.key == "steely" ? 1 : 2; G.hud.Chat("BOUND THE RUNE OF " + Stats.StarName[D.starTier] + "! ATTACK +" + (it.key == "steely" ? 8 : 20) + ".", "gold"); Sfx.Play("unlock"); }
+                else { D.starTier = it.key == "steely" ? 1 : 2; G.hud.Chat(Stats.StarName[D.starTier] + "의 룬을 장착했다! 공격력 +" + (it.key == "steely" ? 8 : 20), "gold"); Sfx.Play("unlock"); }
             }
         }
         panel.Set(56, 40, 208, 112);
-        title.Set("MIRA'S GOODS", "gold", 64, 146);
+        title.Set("미라의 잡화점", "gold", 64, 146);
         for (int k = 0; k < 4; k++)
         {
             var it = items[k]; int y = 132 - k * 20;
@@ -448,11 +448,11 @@ public class Shop
             icons[k].enabled = true; icons[k].sprite = Atlas.Named("items", it.icon); Px.Place(icons[k].transform, 70, y - 13);
             bool owned = (it.key == "steely" && D.starTier >= 1) || (it.key == "ilbi" && D.starTier >= 2);
             names[k].Set(it.name, k == sel ? "gold" : "white", 80, y - 4);
-            string p = owned ? "OWNED" : it.price + " MESO";
+            string p = owned ? "보유 중" : it.price + " 메소";
             prices[k].Set(p, owned ? "green" : "white", 256 - PixelText.Width(p), y - 4);
         }
-        meso.Set("MESO " + D.meso, "gold", 64, 52);
-        help.Set("SPACE BUY  ESC CLOSE", "white", 256 - PixelText.Width("SPACE BUY  ESC CLOSE"), 52);
+        meso.Set("메소 " + D.meso, "gold", 64, 52);
+        help.Set("스페이스 구매  ESC 닫기", "white", 256 - PixelText.Width("스페이스 구매  ESC 닫기"), 52);
     }
     void Hide()
     {
@@ -504,24 +504,24 @@ public class Screens
     {
         var G = Game.I;
         bool has = Stats.HasSave;
-        string[] opts = has ? new[] { "CONTINUE", "NEW GAME" } : new[] { "NEW GAME" };
+        string[] opts = has ? new[] { "이어하기", "새 게임" } : new[] { "새 게임" };
         if (i.navU || i.navD) { sel = (sel + 1) % opts.Length; Sfx.Play("click"); }
         sel = Mathf.Clamp(sel, 0, opts.Length - 1);
         logo.enabled = logo.sprite != null;
         if (logo.enabled) Px.Place(logo.transform, Mathf.Round((Px.W - logo.sprite.rect.width) / 2), 104);
-        sub.Set(logo.enabled ? "A TALE OF FIVE HEROES" : "HOLLOW CROWN", logo.enabled ? "white" : "goldBig", Mathf.Round((Px.W - PixelText.Width(logo.enabled ? "A TALE OF FIVE HEROES" : "HOLLOW CROWN", logo.enabled ? 1 : 2)) / 2f), logo.enabled ? 100 : 130);
+        sub.Set(logo.enabled ? "다섯 영웅의 이야기" : "HOLLOW CROWN", logo.enabled ? "white" : "goldBig", Mathf.Round((Px.W - PixelText.Width(logo.enabled ? "다섯 영웅의 이야기" : "HOLLOW CROWN", logo.enabled ? 1 : 2)) / 2f), logo.enabled ? 100 : 130);
         for (int k = 0; k < 2; k++)
         {
             if (k >= opts.Length) { menu[k].Hide(); continue; }
             string s = k == sel ? "- " + opts[k] + " -" : opts[k];
             menu[k].Set(s, k == sel ? "gold" : "white", Mathf.Round((Px.W - PixelText.Width(s)) / 2f), 76 - k * 10);
         }
-        press.Set("SPACE TO SELECT", "white", Mathf.Round((Px.W - PixelText.Width("SPACE TO SELECT")) / 2f), 48, ((G.tick >> 5) & 1) == 0);
+        press.Set("스페이스(점프)로 선택", "white", Mathf.Round((Px.W - PixelText.Width("스페이스(점프)로 선택")) / 2f), 48, ((G.tick >> 5) & 1) == 0);
         ver.Set("V0.2", "dark", 4, 8);
         if (i.confirm)
         {
             Sfx.Play("quest"); HideTitle();
-            if (opts[sel] == "NEW GAME") { Choosing = true; cT = 0; prevAnim = null; }
+            if (opts[sel] == "새 게임") { Choosing = true; cT = 0; prevAnim = null; }
             else G.StartGame(false, null);
         }
     }
@@ -540,7 +540,7 @@ public class Screens
         bool ok = Classes.Available(c);
         if (i.confirm && ok) { Choosing = false; HideClass(); Sfx.Play("quest"); G.StartGame(true, c.id); return; }
         cT += Px.DT;
-        string tt = "CHOOSE YOUR CLASS";
+        string tt = "직업을 선택하세요";
         cTitle.Set(tt, "goldBig", Mathf.Round((Px.W - PixelText.Width(tt, 2)) / 2f), 172);
         int step = 46, x0 = (Px.W - (4 * step + 38)) / 2;
         for (int k = 0; k < list.Count; k++)
@@ -568,11 +568,11 @@ public class Screens
         else preview.enabled = false;
         cName.Set(c.name, "goldBig", 118, 100);
         cRole.Set(c.role, "white", 118, 86);
-        for (int k = 0; k < 3; k++) cDesc[k].Set(c.desc[k], "white", 118, 76 - k * 8);
+        for (int k = 0; k < 3; k++) cDesc[k].Set(c.desc[k], "white", 118, 76 - k * 9);
         string[] keys = { "J", "K", "L", "U", "SP" };
         for (int k = 0; k < 5; k++) cSkills[k].Set(keys[k] + " " + c.skill[k], k == 4 ? "blue" : "green", k < 3 ? 118 + k * 62 : 118 + (k - 3) * 92, k < 3 ? 46 : 36);
-        if (!ok) cSkills[4].Set("COMING SOON", "white", 118, 36);
-        cHelp.Set("ARROWS CHOOSE   SPACE START   ESC BACK", "white", Mathf.Round((Px.W - PixelText.Width("ARROWS CHOOSE   SPACE START   ESC BACK")) / 2f), 12);
+        if (!ok) cSkills[4].Set("준비 중", "white", 118, 36);
+        cHelp.Set("방향키 선택 · 스페이스 시작 · ESC 뒤로", "white", Mathf.Round((Px.W - PixelText.Width("방향키 선택 · 스페이스 시작 · ESC 뒤로")) / 2f), 12);
     }
     public void HideClass()
     {
@@ -583,17 +583,17 @@ public class Screens
 
     static readonly string[] Help =
     {
-        "CONTROLS", "", "ARROWS       MOVE / CLIMB (UP, DOWN)", "SPACE        JUMP  (AGAIN IN AIR: MOBILITY, ARROWS AIM TELEPORT)", "DOWN+SPACE   DROP THROUGH A PLATFORM",
-        "UP           TALK TO NPC / ENTER PORTAL", "J  K  L  U   TRIPLE THROW, AVENGER, ASSASSINATE, SHADOW PARTNER", "1  2         RED / BLUE POTION", "",
-        "ESC  RESUME        Q  SAVE AND QUIT TO TITLE", "", "PROGRESS IS SAVED AUTOMATICALLY",
+        "조작법", "", "방향키 - 이동, 오르기/내리기 (↑↓)", "스페이스 - 점프 (공중에서 한 번 더: 이동기)", "↓+스페이스 - 발판 아래로 내려가기",
+        "↑ - NPC와 대화 / 포탈 이동", "J K L U - 스킬", "1 2 - 빨간 / 파란 포션", "",
+        "ESC 계속하기 · Q 저장 후 타이틀로", "", "진행 상황은 자동으로 저장됩니다",
     };
     public void PauseTick(Inp i, bool qPressed)
     {
         var G = Game.I;
-        pause.Set(20, 36, 280, 112);
+        pause.Set(20, 28, 280, 124);
         var sk = Classes.Cur.skill;
         for (int k = 0; k < help.Length; k++)
-            help[k].Set(k == 6 ? "J  K  L  U   " + sk[0] + ", " + sk[1] + ", " + sk[2] + ", " + sk[3] : Help[k], k == 0 ? "gold" : "white", 30, 140 - k * 8);
+            help[k].Set(k == 6 ? "J K L U - " + sk[0] + ", " + sk[1] + ", " + sk[2] + ", " + sk[3] : Help[k], k == 0 ? "gold" : "white", 30, 144 - k * 9);
         if (i.cancel) { Paused = false; HidePause(); }
         if (qPressed) { Paused = false; HidePause(); Stats.Save(); G.ToTitle(); }
     }

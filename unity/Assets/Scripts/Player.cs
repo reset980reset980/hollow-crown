@@ -75,8 +75,8 @@ public partial class Player
     bool Spend(int skill)
     {
         var G = Game.I;
-        if (!Stats.Unlocked(skill)) { G.hud.Chat(Stats.SkillName[skill] + " UNLOCKS AT LV " + Stats.SkillLevel[skill], "white", 2f); Sfx.Play("deny"); return false; }
-        if (Stats.D.mp < Stats.SkillMp[skill]) { G.hud.Chat("NOT ENOUGH MP.", "white", 2f); Sfx.Play("deny"); return false; }
+        if (!Stats.Unlocked(skill)) { G.hud.Chat(Stats.SkillName[skill] + ": LV " + Stats.SkillLevel[skill] + "에 해금됩니다.", "white", 2f); Sfx.Play("deny"); return false; }
+        if (Stats.D.mp < Stats.SkillMp[skill]) { G.hud.Chat("MP가 부족합니다.", "white", 2f); Sfx.Play("deny"); return false; }
         Stats.D.mp -= Stats.SkillMp[skill];
         return true;
     }

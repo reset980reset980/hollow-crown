@@ -1,3 +1,8 @@
+> **한국어판 포크** · 플레이: https://reset980reset980.github.io/hollow-crown/
+> - 게임 속 모든 글자 한글화 — 한글은 갈무리7 픽셀 폰트(Galmuri7, SIL OFL 1.1, `pipeline/fonts/`)를 게임 픽셀 1:1로 구워 원작 폰트와 같은 색·외곽선으로 그립니다 (`KFont.cs`, `node pipeline/kfont.mjs`).
+> - 모바일 대응 — 가로 전체화면, 터치 가상패드(`gh-pages` 브랜치 `index.html`).
+> - 빌드 — `.github/workflows/webgl.yml`가 Unity WebGL을 빌드해 `gh-pages`에 올립니다 (Unity 라이선스 시크릿 필요).
+
 <div align="center">
 
 <img src="media/logo.png" alt="Hollow Crown" width="720">
