@@ -1,20 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Hollow Crown - a free MapleStory-inspired pixel RPG you play in your browser. Five classes, quests, and a three-stage mushroom king. Every sprite, effect and sound was generated as code.">
-<title>Hollow Crown - play free in your browser</title>
-<meta property="og:title" content="Hollow Crown">
-<meta property="og:description" content="A MapleStory-inspired pixel RPG. Pick one of five classes and take down the King Shroom - free, in your browser.">
-<meta property="og:image" content="https://rehan-remade.github.io/hollow-crown/og.png">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="description" content="할로우 크라운 - 브라우저에서 무료로 즐기는 메이플스토리풍 픽셀 RPG. 5개 직업, 퀘스트, 3단계 버섯왕 보스.">
+<meta name="theme-color" content="#0b0a1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>할로우 크라운 - 브라우저 픽셀 RPG</title>
+<meta property="og:title" content="할로우 크라운 (Hollow Crown)">
+<meta property="og:description" content="메이플스토리풍 픽셀 RPG. 5개 직업 중 하나를 골라 버섯왕을 쓰러뜨리세요. 브라우저와 모바일에서 무료.">
+<meta property="og:image" content="og.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap">
 <style>
-  /* Single deliberate night-arcade theme, taken from the game's own palette */
   :root {
     color-scheme: dark;
     --ink: #0b0a1a;
@@ -25,46 +27,102 @@
     --text: #e8e2f5;
     --muted: #9a90bd;
     --display: "Silkscreen", "Courier New", monospace;
-    --body: "Atkinson Hyperlegible", system-ui, sans-serif;
+    --body: "Noto Sans KR", system-ui, sans-serif;
   }
   html, body { height: 100%; }
   body {
+    margin: 0;
     background: var(--ink);
     color: var(--text);
-    font: 15px/1.55 var(--body);
-    padding-inline: 16px;
-    padding-block: 20px 28px;
+    font: 15px/1.6 var(--body);
+    padding: 20px 16px 28px;
     box-sizing: border-box;
   }
   .wrap { max-width: 1152px; margin: 0 auto; display: grid; gap: 16px; }
   header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
-  h1 { font: 700 clamp(22px, 4vw, 34px)/1 var(--display); letter-spacing: 0.04em; margin: 0; color: var(--gold); text-wrap: balance; }
+  h1 { font: 700 clamp(22px, 4vw, 34px)/1 var(--display); letter-spacing: 0.04em; margin: 0; color: var(--gold); }
   h1 span { color: var(--violet); }
   .sub { color: var(--muted); font-size: 13px; margin: 0; }
 
-  .frame { position: relative; aspect-ratio: 16 / 9; width: 100%; max-width: 100%; background: #07060f; outline: 2px solid var(--line); outline-offset: 0; }
+  .frame { position: relative; aspect-ratio: 16 / 9; width: 100%; background: #07060f; outline: 2px solid var(--line); }
   #unity-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: pixelated; image-rendering: crisp-edges; background: #07060f; }
-  #unity-canvas:focus-visible { outline: 2px solid var(--violet); }
-  .overlay { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 14px; background: #07060fe6; text-align: center; padding: 16px; }
+  .overlay { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 14px; background: #07060fe6; text-align: center; padding: 16px; z-index: 5; }
   .overlay[hidden] { display: none !important; }
   .bar { width: min(240px, 60%); height: 8px; background: var(--panel); outline: 2px solid var(--line); }
   .bar i { display: block; height: 100%; width: 0; background: var(--violet); }
-  .overlay p { margin: 0; font: 400 13px/1 var(--display); letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
-  #play { font: 700 16px/1 var(--display); letter-spacing: 0.08em; color: var(--ink); background: var(--gold); border: 0; padding: 14px 22px; cursor: pointer; box-shadow: 0 4px 0 #b8862a; }
-  #play:hover { transform: translateY(-1px); }
+  .overlay p { margin: 0; font-size: 14px; color: var(--muted); }
+  #play { font: 700 18px/1 var(--body); letter-spacing: 0.04em; color: var(--ink); background: var(--gold); border: 0; padding: 14px 26px; cursor: pointer; box-shadow: 0 4px 0 #b8862a; }
   #play:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
-  #err { color: #ff8a9a; font: 14px/1.5 var(--body); max-width: 46ch; }
+  #err { color: #ff8a9a; font-size: 14px; max-width: 46ch; }
 
   .keys { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 0; padding: 0; list-style: none; }
   .keys li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
-  .keys b { color: var(--text); font-weight: 700; }
+  .keys b { color: var(--text); }
   kbd { font: 400 12px/1 var(--display); color: var(--text); background: var(--panel); border: 2px solid var(--line); border-bottom-width: 4px; padding: 5px 7px 3px; min-width: 12px; text-align: center; }
   .note { color: var(--muted); font-size: 13px; max-width: 72ch; margin: 0; }
   .note strong { color: var(--text); }
   a { color: var(--violet); }
-  #fs { font: 400 12px/1 var(--display); color: var(--text); background: var(--panel); border: 2px solid var(--line); padding: 5px 8px 4px; cursor: pointer; }
-  #fs:focus-visible { outline: 2px solid var(--violet); }
-  @media (prefers-reduced-motion: reduce) { #play:hover { transform: none; } }
+  #fs { font: 400 12px/1 var(--body); color: var(--text); background: var(--panel); border: 2px solid var(--line); padding: 5px 8px 4px; cursor: pointer; }
+
+  /* ---------- 모바일(터치) 모드 ---------- */
+  #pad, #rotate { display: none; }
+  body.touch { padding: 0; overflow: hidden; position: fixed; inset: 0; overscroll-behavior: none; }
+  body.touch .wrap { max-width: none; display: block; height: 100%; }
+  body.touch header, body.touch .keys, body.touch .note { display: none; }
+  body.touch .frame { position: fixed; inset: 0; aspect-ratio: auto; width: 100%; height: 100%; outline: 0; }
+  body.touch, body.touch * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+  body.touch .frame, body.touch #pad { touch-action: none; }
+  body.touch.playing #pad { display: block; }
+
+  #pad { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+  #pad .btn, #dpad { pointer-events: auto; position: absolute; }
+  #pad .btn {
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: rgba(28, 15, 58, 0.45);
+    border: 2px solid rgba(201, 140, 255, 0.55);
+    color: var(--text);
+    font: 700 13px/1.1 var(--body);
+    text-align: center;
+    text-shadow: 0 1px 2px #000;
+  }
+  #pad .btn small { display: block; font: 400 9px/1 var(--display); color: var(--muted); margin-top: 2px; }
+  #pad .btn.on, #dpad .arm.on { background: rgba(201, 140, 255, 0.55); border-color: var(--gold); }
+
+  #dpad {
+    left: calc(env(safe-area-inset-left) + 18px); bottom: calc(env(safe-area-inset-bottom) + 16px);
+    width: 150px; height: 150px;
+  }
+  #dpad .arm {
+    position: absolute; width: 50px; height: 50px;
+    background: rgba(28, 15, 58, 0.45); border: 2px solid rgba(201, 140, 255, 0.55); border-radius: 10px;
+    display: grid; place-items: center; color: var(--text); font-size: 20px; line-height: 1;
+  }
+  #dpad .u { left: 50px; top: 0; } #dpad .d { left: 50px; bottom: 0; }
+  #dpad .l { left: 0; top: 50px; } #dpad .r { right: 0; top: 50px; }
+
+  /* 오른쪽: 점프(큰 버튼) + 스킬 4개 부채꼴 */
+  .b-jump  { width: 78px; height: 78px; right: calc(env(safe-area-inset-right) + 22px); bottom: calc(env(safe-area-inset-bottom) + 22px); font-size: 15px !important; border-color: var(--gold) !important; }
+  .b-j     { width: 58px; height: 58px; right: calc(env(safe-area-inset-right) + 110px); bottom: calc(env(safe-area-inset-bottom) + 14px); }
+  .b-k     { width: 54px; height: 54px; right: calc(env(safe-area-inset-right) + 118px); bottom: calc(env(safe-area-inset-bottom) + 82px); }
+  .b-l     { width: 54px; height: 54px; right: calc(env(safe-area-inset-right) + 66px); bottom: calc(env(safe-area-inset-bottom) + 118px); }
+  .b-u     { width: 54px; height: 54px; right: calc(env(safe-area-inset-right) + 6px);  bottom: calc(env(safe-area-inset-bottom) + 112px); }
+  /* 위쪽 작은 버튼 */
+  .b-p1, .b-p2, .b-esc, .b-full { width: 44px; height: 44px; font-size: 11px !important; top: calc(env(safe-area-inset-top) + 8px); border-radius: 10px !important; }
+  .b-esc  { left: calc(env(safe-area-inset-left) + 10px); }
+  .b-full { left: calc(env(safe-area-inset-left) + 60px); }
+  .b-p1   { right: calc(env(safe-area-inset-right) + 60px); background: rgba(120, 20, 40, 0.5) !important; }
+  .b-p2   { right: calc(env(safe-area-inset-right) + 10px); background: rgba(20, 40, 120, 0.5) !important; }
+
+  #rotate {
+    position: fixed; inset: 0; z-index: 10; background: var(--ink);
+    place-items: center; align-content: center; gap: 16px; text-align: center; padding: 24px;
+  }
+  #rotate .ph { width: 56px; height: 92px; border: 3px solid var(--violet); border-radius: 10px; animation: turn 2s ease-in-out infinite; }
+  #rotate p { margin: 0; font-size: 16px; }
+  @keyframes turn { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(-90deg); } }
+  @media (orientation: portrait) { body.touch #rotate { display: grid; } }
+  @media (prefers-reduced-motion: reduce) { #rotate .ph { animation: none; transform: rotate(-90deg); } }
 </style>
 </head>
 <body>
@@ -72,38 +130,83 @@
 <div class="wrap">
   <header>
     <h1>HOLLOW <span>CROWN</span></h1>
-    <p class="sub">A MapleStory-inspired pixel RPG · five classes · free in your browser · <a href="https://github.com/rehan-remade/hollow-crown">source on GitHub</a> · <button id="fs" type="button">⛶ Fullscreen</button></p>
+    <p class="sub">메이플스토리풍 픽셀 RPG · 5개 직업 · 브라우저 무료 플레이 · <a href="https://github.com/reset980reset980/hollow-crown">GitHub 소스</a> · <button id="fs" type="button">⛶ 전체화면</button></p>
   </header>
 
-  <div class="frame">
-    <canvas id="unity-canvas" tabindex="-1" aria-label="Hollow Crown game"></canvas>
+  <div class="frame" id="frame">
+    <canvas id="unity-canvas" tabindex="-1" aria-label="할로우 크라운 게임 화면"></canvas>
     <div class="overlay" id="loading">
       <div class="bar"><i id="fill"></i></div>
-      <p id="status">Loading 11 MB</p>
+      <p id="status">불러오는 중 (11MB)</p>
     </div>
     <div class="overlay" id="start" hidden>
-      <button id="play" type="button">▶ PLAY</button>
-      <p>Click the game, then use the keys below</p>
+      <button id="play" type="button">▶ 게임 시작</button>
+      <p id="hint">게임 화면을 클릭한 뒤 아래 키로 조작하세요</p>
     </div>
   </div>
 
-  <ul class="keys" aria-label="Controls">
-    <li><kbd>←</kbd><kbd>→</kbd> <b>Move</b></li>
-    <li><kbd>SPACE</kbd> <b>Jump</b> · again in the air for your class move (Teleport aims with the arrows)</li>
-    <li><kbd>↓</kbd>+<kbd>SPACE</kbd> <b>Drop down</b></li>
-    <li><kbd>↑</kbd> <b>Climb · talk · portal</b></li>
-    <li><kbd>J</kbd><kbd>K</kbd><kbd>L</kbd><kbd>U</kbd> <b>Skills</b></li>
-    <li><kbd>1</kbd><kbd>2</kbd> <b>Potions</b></li>
-    <li><kbd>ESC</kbd> <b>Help</b></li>
+  <ul class="keys" aria-label="조작법">
+    <li><kbd>←</kbd><kbd>→</kbd> <b>이동</b></li>
+    <li><kbd>SPACE</kbd> <b>점프</b> · 공중에서 한 번 더 누르면 직업 이동기 (텔레포트는 방향키로 조준)</li>
+    <li><kbd>↓</kbd>+<kbd>SPACE</kbd> <b>아래로 내려가기</b></li>
+    <li><kbd>↑</kbd> <b>오르기 · 대화 · 포탈</b></li>
+    <li><kbd>J</kbd><kbd>K</kbd><kbd>L</kbd><kbd>U</kbd> <b>스킬</b></li>
+    <li><kbd>1</kbd><kbd>2</kbd> <b>물약</b></li>
+    <li><kbd>ESC</kbd> <b>도움말 · 일시정지</b></li>
   </ul>
-  <p class="note">Pick a class — <strong>Hero, Arch Mage, Bishop, Bowmaster or Night Lord</strong> — then talk to <strong>Elder Rowan</strong> by the campfire to begin. Every sprite, effect, song and sound was <strong>generated as code</strong>, baked into sprite sheets and WAVs, and rendered in Unity at a native 320×180 with a pixel-perfect upscale. Progress saves in this browser.</p>
+  <p class="note">직업을 고르세요 — <strong>히어로, 아크메이지, 비숍, 보우마스터, 나이트로드</strong>. 그다음 모닥불 옆 <strong>장로 로완(Elder Rowan)</strong>에게 말을 걸면 모험이 시작됩니다. 모든 그림·효과·음악·효과음은 <strong>코드로 생성</strong>되었고, Unity에서 320×180 해상도로 렌더링됩니다. 진행 상황은 이 브라우저에 저장됩니다. 원작: <a href="https://github.com/rehan-remade/hollow-crown">rehan-remade/hollow-crown</a> (MIT)</p>
 </div>
+
+<!-- 모바일 터치 패드 -->
+<div id="pad" aria-hidden="true">
+  <div id="dpad">
+    <div class="arm u">▲</div><div class="arm l">◀</div><div class="arm r">▶</div><div class="arm d">▼</div>
+  </div>
+  <div class="btn b-jump" data-key="Space">점프</div>
+  <div class="btn b-j" data-key="KeyJ">공격<small>J</small></div>
+  <div class="btn b-k" data-key="KeyK">스킬1<small>K</small></div>
+  <div class="btn b-l" data-key="KeyL">스킬2<small>L</small></div>
+  <div class="btn b-u" data-key="KeyU">스킬3<small>U</small></div>
+  <div class="btn b-esc" data-key="Escape">메뉴</div>
+  <div class="btn b-full" data-action="fullscreen">⛶</div>
+  <div class="btn b-p1" data-key="Digit1">HP</div>
+  <div class="btn b-p2" data-key="Digit2">MP</div>
+</div>
+
+<div id="rotate"><div class="ph"></div><p>휴대폰을 <b>가로</b>로 돌려주세요</p></div>
 
 <script src="Build/WebGL.loader.js"></script>
 <script>
 (function () {
-  var canvas = document.getElementById('unity-canvas'), instance = null;
-  document.getElementById('fs').addEventListener('click', function () { if (instance) instance.SetFullscreen(1); canvas.focus(); });
+  var canvas = document.getElementById('unity-canvas'), frame = document.getElementById('frame'), instance = null;
+  var isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window && navigator.maxTouchPoints > 0);
+  if (/[?&]touch=1/.test(location.search)) isTouch = true;
+  if (/[?&]touch=0/.test(location.search)) isTouch = false;
+  if (isTouch) {
+    document.body.classList.add('touch');
+    document.getElementById('hint').textContent = '가로 화면에서 터치 버튼으로 조작하세요';
+  }
+
+  // ---- 전체화면 + 가로 고정 (지원하는 기기만) ----
+  function goFullscreen() {
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (!req) return;
+    try {
+      var p = req.call(el, { navigationUI: 'hide' });
+      if (p && p.then) p.then(lockLandscape).catch(function () {});
+      else lockLandscape();
+    } catch (e) {}
+  }
+  function lockLandscape() {
+    try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); } catch (e) {}
+  }
+  document.getElementById('fs').addEventListener('click', function () {
+    if (isTouch) goFullscreen(); else if (instance) instance.SetFullscreen(1);
+    canvas.focus();
+  });
+
+  // ---- Unity 로딩 ----
   var fill = document.getElementById('fill'), status = document.getElementById('status');
   var loading = document.getElementById('loading'), start = document.getElementById('start');
   var config = {
@@ -116,7 +219,7 @@
   };
   createUnityInstance(canvas, config, function (p) {
     fill.style.width = Math.round(p * 100) + '%';
-    status.textContent = p < 1 ? 'Loading ' + Math.round(p * 100) + '%' : 'Starting';
+    status.textContent = p < 1 ? '불러오는 중 ' + Math.round(p * 100) + '%' : '시작하는 중';
   }).then(function (inst) {
     instance = inst;
     loading.hidden = true;
@@ -124,17 +227,98 @@
   }).catch(function (e) {
     status.innerHTML = '';
     var m = document.createElement('p'); m.id = 'err';
-    m.textContent = 'The game could not start in this viewer (' + (e && e.message ? e.message : e) + '). The Windows build on GitHub runs the same game.';
+    m.textContent = '이 브라우저에서 게임을 시작할 수 없습니다 (' + (e && e.message ? e.message : e) + ').';
     loading.appendChild(m);
   });
   document.getElementById('play').addEventListener('click', function () {
     start.hidden = true;
+    if (isTouch) { goFullscreen(); document.body.classList.add('playing'); }
     canvas.focus();
   });
-  // keep arrow keys / space from scrolling the page while playing
   window.addEventListener('keydown', function (e) {
     if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].indexOf(e.key) >= 0 && document.activeElement === canvas) e.preventDefault();
   });
+
+  // ---- 가상 키보드 이벤트 (Unity가 실제 키 입력으로 인식) ----
+  var KEYS = {
+    ArrowLeft:  { key: 'ArrowLeft',  keyCode: 37 }, ArrowUp:   { key: 'ArrowUp',   keyCode: 38 },
+    ArrowRight: { key: 'ArrowRight', keyCode: 39 }, ArrowDown: { key: 'ArrowDown', keyCode: 40 },
+    Space:  { key: ' ',  keyCode: 32 }, Escape: { key: 'Escape', keyCode: 27 },
+    KeyJ: { key: 'j', keyCode: 74 }, KeyK: { key: 'k', keyCode: 75 }, KeyL: { key: 'l', keyCode: 76 }, KeyU: { key: 'u', keyCode: 85 },
+    Digit1: { key: '1', keyCode: 49 }, Digit2: { key: '2', keyCode: 50 }
+  };
+  var held = {};   // code -> 누르고 있는 손가락 수
+  function send(type, code) {
+    var k = KEYS[code]; if (!k) return;
+    var ev = new KeyboardEvent(type, { key: k.key, code: code, keyCode: k.keyCode, which: k.keyCode, bubbles: true, cancelable: true });
+    try { Object.defineProperty(ev, 'keyCode', { get: function () { return k.keyCode; } }); Object.defineProperty(ev, 'which', { get: function () { return k.keyCode; } }); } catch (e) {}
+    canvas.dispatchEvent(ev);
+    if (type === 'keydown' && k.key.length === 1) {
+      var kp = new KeyboardEvent('keypress', { key: k.key, code: code, charCode: k.key.charCodeAt(0), bubbles: true });
+      canvas.dispatchEvent(kp);
+    }
+  }
+  function press(code) { held[code] = (held[code] || 0) + 1; if (held[code] === 1) send('keydown', code); }
+  function release(code) { if (!held[code]) return; held[code]--; if (held[code] === 0) send('keyup', code); }
+  window.__hcKey = { press: press, release: release };   // 디버그/테스트용
+
+  // 일반 버튼: 손가락마다 추적 (멀티터치)
+  Array.prototype.forEach.call(document.querySelectorAll('#pad .btn'), function (b) {
+    var code = b.getAttribute('data-key'), action = b.getAttribute('data-action'), pointers = {};
+    b.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      try { b.releasePointerCapture(e.pointerId); } catch (_) {}
+      if (action === 'fullscreen') { goFullscreen(); return; }
+      if (pointers[e.pointerId]) return;
+      pointers[e.pointerId] = 1; b.classList.add('on'); press(code);
+      if (navigator.vibrate) navigator.vibrate(8);
+    });
+    function up(e) {
+      if (!pointers[e.pointerId]) return;
+      delete pointers[e.pointerId]; release(code);
+      if (!Object.keys(pointers).length) b.classList.remove('on');
+    }
+    b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('pointerleave', up);
+  });
+
+  // 십자키: 손가락 위치로 방향 판정 (대각선 가능, 미끄러지며 방향 전환)
+  var dpad = document.getElementById('dpad'), dirOwner = null, dirState = {};
+  var ARM = { ArrowUp: dpad.querySelector('.u'), ArrowDown: dpad.querySelector('.d'), ArrowLeft: dpad.querySelector('.l'), ArrowRight: dpad.querySelector('.r') };
+  function setDirs(next) {
+    Object.keys(ARM).forEach(function (c) {
+      var want = !!next[c];
+      if (want && !dirState[c]) { press(c); ARM[c].classList.add('on'); }
+      if (!want && dirState[c]) { release(c); ARM[c].classList.remove('on'); }
+      dirState[c] = want;
+    });
+  }
+  function dirsFrom(e) {
+    var r = dpad.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var dx = e.clientX - cx, dy = e.clientY - cy, dead = r.width * 0.14, n = {};
+    if (Math.abs(dx) > dead && Math.abs(dx) > Math.abs(dy) * 0.45) n[dx < 0 ? 'ArrowLeft' : 'ArrowRight'] = 1;
+    if (Math.abs(dy) > dead && Math.abs(dy) > Math.abs(dx) * 0.45) n[dy < 0 ? 'ArrowUp' : 'ArrowDown'] = 1;
+    return n;
+  }
+  dpad.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    if (dirOwner !== null) return;
+    dirOwner = e.pointerId;
+    try { dpad.setPointerCapture(e.pointerId); } catch (_) {}
+    setDirs(dirsFrom(e));
+  });
+  dpad.addEventListener('pointermove', function (e) { if (e.pointerId === dirOwner) setDirs(dirsFrom(e)); });
+  function dEnd(e) { if (e.pointerId !== dirOwner) return; dirOwner = null; setDirs({}); }
+  dpad.addEventListener('pointerup', dEnd); dpad.addEventListener('pointercancel', dEnd);
+
+  // 앱 전환 등으로 손을 뗀 이벤트를 놓치면 전부 해제
+  function releaseAll() {
+    setDirs({}); dirOwner = null;
+    Object.keys(held).forEach(function (c) { if (held[c]) { held[c] = 1; release(c); } });
+    Array.prototype.forEach.call(document.querySelectorAll('#pad .on'), function (b) { b.classList.remove('on'); });
+  }
+  document.addEventListener('visibilitychange', function () { if (document.hidden) releaseAll(); });
+  window.addEventListener('blur', releaseAll);
+  if (isTouch) document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 })();
 </script>
 
