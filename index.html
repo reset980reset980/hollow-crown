@@ -175,6 +175,18 @@
 
 <div id="rotate"><div class="ph"></div><p>휴대폰을 <b>가로</b>로 돌려주세요</p></div>
 
+<script>
+// 브라우저 확장 프로그램(chrome-extension:// 등)이 낸 오류는 Unity 로더가 게임 오류로 오인해 시작을 멈추므로 여기서 차단
+(function () {
+  var EXT = /(chrome|moz|safari(-web)?|ms-browser)-extension:\/\//;
+  function fromExt(e) {
+    var s = (e && (e.filename || '')) + ' ' + ((e && e.error && e.error.stack) || '') + ' ' + ((e && e.reason && e.reason.stack) || '');
+    return EXT.test(s);
+  }
+  window.addEventListener('error', function (e) { if (fromExt(e)) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+  window.addEventListener('unhandledrejection', function (e) { if (fromExt(e)) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+})();
+</script>
 <script src="Build/WebGL.loader.js"></script>
 <script>
 (function () {
